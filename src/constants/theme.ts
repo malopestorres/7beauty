@@ -26,6 +26,27 @@ export const Colors = {
 
 export type ThemeColor = keyof typeof Colors.light & keyof typeof Colors.dark;
 
+/** Cores da marca 7Beauty (extraídas do design no Figma). */
+export const Brand = {
+  primary: '#F43F5E',
+  onPrimary: '#FFFFFF',
+  black: '#000000',
+  white: '#FFFFFF',
+  textSecondary: '#60646C',
+} as const;
+
+/** Tipografia da marca 7Beauty. */
+export const Typography = {
+  display: 'Rozha One',
+  body: 'Roboto',
+  sizes: {
+    display: 64,
+    title: 24,
+    body: 16,
+    small: 12,
+  },
+} as const;
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */
