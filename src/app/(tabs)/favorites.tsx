@@ -23,7 +23,7 @@ export default function FavoritesScreen() {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <Text style={styles.title}>Meus Favoritos</Text>
+        <Text style={styles.title}>Meus favoritos</Text>
       </View>
       {favorites.length === 0 ? (
         <View style={styles.empty}>
@@ -57,15 +57,17 @@ const styles = StyleSheet.create({
     backgroundColor: Brand.white,
   },
   header: {
-    backgroundColor: Brand.black,
-    paddingTop: 72,
-    paddingBottom: 24,
+    backgroundColor: Brand.white,
+    height: 77,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
   title: {
     fontFamily: Typography.bodyMedium,
     fontSize: 18,
-    color: Brand.white,
+    color: Brand.black,
   },
   empty: {
     flex: 1,

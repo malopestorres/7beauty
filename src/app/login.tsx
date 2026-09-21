@@ -23,26 +23,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Brand, Typography } from '@/constants/theme';
+import { getAuthErrorMessage } from '@/lib/auth-errors';
 import { auth } from '@/lib/firebase';
-
-function getAuthErrorMessage(error: FirebaseError) {
-  switch (error.code) {
-    case 'auth/invalid-email':
-      return 'Informe um email válido.';
-    case 'auth/user-not-found':
-      return 'Conta não encontrada. Cadastre-se para continuar.';
-    case 'auth/wrong-password':
-      return 'Senha incorreta. Tente novamente.';
-    case 'auth/email-already-in-use':
-      return 'Este email já está cadastrado. Entre com a senha.';
-    case 'auth/weak-password':
-      return 'Senha fraca: use pelo menos 6 caracteres.';
-    case 'auth/invalid-credential':
-      return 'Email ou senha inválidos.';
-    default:
-      return 'Não foi possível entrar. Tente novamente.';
-  }
-}
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
