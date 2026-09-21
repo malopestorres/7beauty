@@ -35,10 +35,11 @@ export const Brand = {
   textSecondary: '#60646C',
 } as const;
 
-/** Tipografia da marca 7Beauty. */
+/** Tipografia da marca 7Beauty (nomes registrados via expo-font). */
 export const Typography = {
-  display: 'Rozha One',
-  body: 'Roboto',
+  display: 'RozhaOne-Regular',
+  body: 'Roboto-Regular',
+  bodyMedium: 'Roboto-Medium',
   sizes: {
     display: 64,
     title: 24,
