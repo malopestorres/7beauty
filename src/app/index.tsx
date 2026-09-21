@@ -3,13 +3,15 @@ import { useEffect } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 import { Brand, Typography } from '@/constants/theme';
+import { auth } from '@/lib/firebase';
 
 const SPLASH_DURATION_MS = 1200;
 
 export default function SplashScreen() {
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.replace('/login');
+      const target = auth.currentUser ? '/(tabs)' : '/login';
+      router.replace(target);
     }, SPLASH_DURATION_MS);
     return () => clearTimeout(timer);
   }, []);
