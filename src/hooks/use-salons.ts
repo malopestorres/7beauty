@@ -15,6 +15,14 @@ import { Salon } from '@/components/salon-card';
 import { db } from '@/lib/firebase';
 
 function parseSalon(id: string, data: Record<string, unknown>): Salon {
+  const professionals = Array.isArray(data.professionals)
+    ? (data.professionals as Record<string, unknown>[])
+        .filter((item) => item && typeof item === 'object')
+        .map((item) => ({
+          name: String(item.name ?? ''),
+          photoUrl: String(item.photoUrl ?? ''),
+        }))
+    : undefined;
   return {
     id,
     name: String(data.name ?? ''),
@@ -29,6 +37,13 @@ function parseSalon(id: string, data: Record<string, unknown>): Salon {
     openingHours: String(data.openingHours ?? ''),
     isOpen: Boolean(data.isOpen),
     imageUrl: String(data.imageUrl ?? ''),
+    description: typeof data.description === 'string' ? data.description : undefined,
+    whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : undefined,
+    email: typeof data.email === 'string' ? data.email : undefined,
+    phone: typeof data.phone === 'string' ? data.phone : undefined,
+    coverUrl: typeof data.coverUrl === 'string' ? data.coverUrl : undefined,
+    professionals,
+    products: Array.isArray(data.products) ? (data.products as string[]) : undefined,
   };
 }
 
@@ -68,6 +83,49 @@ export function useSalons(): Salon[] {
     },
     () => salonsCache,
     () => salonsCache,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Store de salão individual (doc `salons/{id}`)
+// ---------------------------------------------------------------------------
+
+type SalonStore = {
+  salon: Salon | null;
+  listeners: Set<() => void>;
+  unsubscribe: Unsubscribe | null;
+};
+
+const salonStores = new Map<string, SalonStore>();
+
+function getSalonStore(id: string): SalonStore {
+  let store = salonStores.get(id);
+  if (!store) {
+    const fresh: SalonStore = { salon: null, listeners: new Set(), unsubscribe: null };
+    salonStores.set(id, fresh);
+    store = fresh;
+    const ref = doc(db, 'salons', id);
+    fresh.unsubscribe = onSnapshot(ref, (snapshot) => {
+      fresh.salon = snapshot.exists()
+        ? parseSalon(snapshot.id, snapshot.data() as Record<string, unknown>)
+        : null;
+      fresh.listeners.forEach((listener) => listener());
+    });
+  }
+  return store;
+}
+
+export function useSalon(id: string): Salon | null {
+  return useSyncExternalStore(
+    (callback) => {
+      const store = getSalonStore(id);
+      store.listeners.add(callback);
+      return () => {
+        store.listeners.delete(callback);
+      };
+    },
+    () => getSalonStore(id).salon,
+    () => getSalonStore(id).salon,
   );
 }
 

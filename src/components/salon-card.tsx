@@ -4,6 +4,11 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Brand, Typography } from '@/constants/theme';
 
+export type Professional = {
+  name: string;
+  photoUrl: string;
+};
+
 export type Salon = {
   id: string;
   name: string;
@@ -18,6 +23,13 @@ export type Salon = {
   openingHours: string;
   isOpen: boolean;
   imageUrl: string;
+  description?: string;
+  whatsapp?: string;
+  email?: string;
+  phone?: string;
+  coverUrl?: string;
+  professionals?: Professional[];
+  products?: string[];
 };
 
 type Props = {

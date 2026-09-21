@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -57,9 +58,7 @@ export default function ListScreen() {
             salon={item}
             isFavorite={favoriteIds.has(item.id)}
             onToggleFavorite={(salon: Salon) => toggleFavorite(salon)}
-            onPress={(salon: Salon) =>
-              console.log('navegar para salão', salon.id) // TODO: tela Perfil Salon
-            }
+            onPress={(salon: Salon) => router.push(`/salon/${salon.id}`)}
           />
         )}
         contentContainerStyle={styles.listContent}

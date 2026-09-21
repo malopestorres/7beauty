@@ -1,4 +1,5 @@
 import { onAuthStateChanged, User } from 'firebase/auth';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
@@ -38,7 +39,7 @@ export default function FavoritesScreen() {
               salon={item}
               isFavorite
               onToggleFavorite={(salon: Salon) => toggleFavorite(salon)}
-              onPress={() => undefined}
+              onPress={(salon: Salon) => router.push(`/salon/${salon.id}`)}
             />
           )}
           contentContainerStyle={styles.listContent}
