@@ -2,11 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { FirebaseError } from 'firebase/app';
 import {
-  browserLocalPersistence,
-  browserSessionPersistence,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
-  setPersistence,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import { useState } from 'react';
@@ -25,6 +22,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Brand, Typography } from '@/constants/theme';
 import { getAuthErrorMessage } from '@/lib/auth-errors';
 import { auth } from '@/lib/firebase';
+import { setRememberMe as persistRememberMe } from '@/lib/session';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -43,10 +41,7 @@ export default function LoginScreen() {
     }
     setIsSubmitting(true);
     try {
-      await setPersistence(
-        auth,
-        rememberMe ? browserLocalPersistence : browserSessionPersistence,
-      );
+      await persistRememberMe(rememberMe);
       try {
         await signInWithEmailAndPassword(auth, email.trim(), password);
       } catch (error) {

@@ -1,19 +1,35 @@
 import { router } from 'expo-router';
+import { signOut } from 'firebase/auth';
 import { useEffect } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 
 import { Brand, Typography } from '@/constants/theme';
 import { auth } from '@/lib/firebase';
+import { isRemembered } from '@/lib/session';
 
 const SPLASH_DURATION_MS = 1200;
 
 export default function SplashScreen() {
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const target = auth.currentUser ? '/(tabs)' : '/login';
-      router.replace(target);
+    let active = true;
+    const timer = setTimeout(async () => {
+      const user = auth.currentUser;
+      const remember = await isRemembered();
+      let target: '/login' | '/(tabs)' = '/login';
+      if (user && remember) {
+        target = '/(tabs)';
+      } else if (user) {
+        // "Lembre-me" desmarcado: não mantém a sessão ao reabrir o app.
+        await signOut(auth);
+      }
+      if (active) {
+        router.replace(target);
+      }
     }, SPLASH_DURATION_MS);
-    return () => clearTimeout(timer);
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
