@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Salões: leitura pública para visitantes, escrita restrita a admins.
+    match /salons/{salonId} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Usuários: apenas o próprio usuário acessa seus dados.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Favoritos: usuário autenticado gerencia os próprios favoritos.
+    match /favorites/{favId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create, update, delete: if request.auth != null
+        && request.resource.data.userId == request.auth.uid;
+    }
+  }
+}
