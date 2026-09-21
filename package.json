@@ -3,6 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@expo-google-fonts/roboto": "^0.4.3",
+    "@expo-google-fonts/rozha-one": "^0.4.1",
     "@expo/ui": "~57.0.19",
     "expo": "~57.0.24",
     "expo-constants": "~57.0.19",
@@ -36,7 +38,6 @@
   },
   "scripts": {
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
