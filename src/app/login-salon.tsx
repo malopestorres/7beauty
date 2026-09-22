@@ -1,11 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { FirebaseError } from 'firebase/app';
-import {
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { sendPasswordResetEmail } from 'firebase/auth';
 import { useState } from 'react';
 import {
   Alert,
@@ -22,6 +18,7 @@ import { Brand, Typography } from '@/constants/theme';
 import { getAuthErrorMessage } from '@/lib/auth-errors';
 import { auth } from '@/lib/firebase';
 import { setRememberMe as persistRememberMe } from '@/lib/session';
+import { signInOrCreate } from '@/lib/sign-in';
 
 export default function LoginSalonScreen() {
   const [email, setEmail] = useState('');
@@ -37,19 +34,18 @@ export default function LoginSalonScreen() {
     setIsSubmitting(true);
     try {
       await persistRememberMe(rememberMe);
-      try {
-        await signInWithEmailAndPassword(auth, email.trim(), password);
-      } catch (error) {
-        const code = (error as FirebaseError).code;
-        if (code === 'auth/user-not-found') {
-          await createUserWithEmailAndPassword(auth, email.trim(), password);
-        } else {
-          throw error;
-        }
-      }
+      await signInOrCreate(auth, email.trim(), password);
       router.replace('/(tabs)');
     } catch (error) {
-      Alert.alert('Erro', getAuthErrorMessage(error as FirebaseError));
+      const code = (error as FirebaseError).code;
+      if (code === 'auth/email-already-in-use') {
+        Alert.alert(
+          'Senha incorreta',
+          'Este email já está cadastrado. Confira a senha e tente novamente.',
+        );
+      } else {
+        Alert.alert('Erro', getAuthErrorMessage(error as FirebaseError));
+      }
     } finally {
       setIsSubmitting(false);
     }
